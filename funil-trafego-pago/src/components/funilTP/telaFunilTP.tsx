@@ -9,7 +9,7 @@ import ReactFlow, {
   Connection,
   Edge
 } from "reactflow";
-
+import EntradaValor from "./entradaValor";
 import "reactflow/dist/style.css";
 import { FunnelStepType, funnelStepLabels } from "./etapasFunilTP";
 import NodesFunil from "./nodesFunilTP";
@@ -22,20 +22,25 @@ let id = 2;
 const getId = () => `${id++}`;
 
 export default function TelaFunilTP() {
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
 
-  // 🔹 estado do select
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [currentStepType, setCurrentStepType] = useState<FunnelStepType | null>(null);
   const [selectedStep, setSelectedStep] = useState<FunnelStepType>("ad");
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([
-    {
-      id: "1",
-      position: { x: 250, y: 100 },
-      data: { label: "Anúncio", stepType: "ad" },
-      type: "default"
-    }
-  ]);
-
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const handleEdit = (nodeId: string) => {
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+
+    setCurrentStepType(node.data.stepType);
+    setInputValue(node.data.value || "");
+    setEditingNodeId(nodeId);
+    setIsModalOpen(true);
+  };
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -45,38 +50,60 @@ export default function TelaFunilTP() {
   );
 
   const addEtapa = (stepType: FunnelStepType) => {
-    let value = "";
+    setCurrentStepType(stepType);
+    setInputValue("");
+    setEditingNodeId(null); 
+    setIsModalOpen(true);
+  };
 
-    if (stepType === "ad") {
-      value = prompt("Digite o número de impressões:") || "";
+  const editarEtapa = (nodeId: string, novoValor: string) => {
+    setNodes((nds: any[]) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? {
+            ...node,
+            data: {
+              ...node.data,
+              value: novoValor
+            }
+          }
+          : node
+      )
+    );
+  };
+  const excluirEtapa = (nodeId: string) => {
+    setNodes((nds: any[]) => nds.filter((node) => node.id !== nodeId));
+    setEdges((eds: any[]) => eds.filter(
+      (edge) => edge.source !== nodeId && edge.target !== nodeId
+    ));
+  };
+
+  const confirmarEtapa = () => {
+    if (!currentStepType) return;
+
+    if (editingNodeId) {
+      editarEtapa(editingNodeId, inputValue);
+    } 
+    
+    else {
+      const newNode = {
+        id: getId(),
+        position: { x: 90, y: 90 },
+        type: "funnelNode",
+        data: {
+          label: funnelStepLabels[currentStepType],
+          stepType: currentStepType,
+          value: inputValue,
+          onEdit: handleEdit,
+          onDelete: excluirEtapa
+        }
+      };
+
+      setNodes((nds: any) => [...nds, newNode]);
     }
 
-    if (stepType === "landing") {
-      value = prompt("Digite o número de cliques:") || "";
-    }
-
-    if (stepType === "form") {
-      value = prompt("Digite o número de leads:") || "";
-    }
-
-    if (stepType === "checkout") {
-      value = prompt("Digite o número de vendas:") || "";
-    }
-    const newNode = {
-      id: getId(),
-      position: {
-        x: 100,
-        y: 100
-      },
-      data: {
-        label: funnelStepLabels[stepType],
-        stepType,
-        value 
-      },
-      type: "funnelNode"
-    };
-
-    setNodes((nds: any) => [...nds, newNode]);
+    setIsModalOpen(false);
+    setEditingNodeId(null);
   };
 
   return (
@@ -84,20 +111,17 @@ export default function TelaFunilTP() {
 
       <div
         style={{
-          zIndex: 10,
-          top: 20,
-          left: 20,
-          background: "#ffffff",
-          padding: "16px",
+          padding: "13px",
           borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 12px rgba(99, 99, 99, 0.34)",
           display: "flex",
           alignItems: "center",
-          gap: "12px",
+          width: "50%",
+          gap: "27px",
           border: "1px solid #e5e7eb"
         }}
       >
-        <span style={{ fontWeight: 600 }}>Adicionar etapa:</span>
+        <span style={{ fontWeight: 600, marginLeft: 18 }}>Defina a etapa que você quer adicionar:</span>
 
         <select
           value={selectedStep}
@@ -122,7 +146,7 @@ export default function TelaFunilTP() {
         <button
           onClick={() => addEtapa(selectedStep)}
           style={{
-            background: "#2563eb",
+            background: "#f04c00",
             color: "white",
             border: "none",
             padding: "8px 16px",
@@ -136,6 +160,14 @@ export default function TelaFunilTP() {
         </button>
       </div>
 
+      <EntradaValor
+        isOpen={isModalOpen}
+        stepType={currentStepType}
+        value={inputValue}
+        onChange={setInputValue}
+        onConfirm={confirmarEtapa}
+        onCancel={() => setIsModalOpen(false)}
+      />
       <ReactFlow
         nodes={nodes}
         edges={edges}

@@ -11,14 +11,15 @@ function App() {
       }
       }
     >
-      <h1 style={{ marginBottom: "5px" }}>
-        Construtor de Funil de Tráfego Pago
+      <div style={{display: "flex"}}>
+      <h1 style={{ marginBottom: "10px", fontSize: "35px", color:"orangered" }}>
+        Construa seu Funil de Tráfego Pago
       </h1>
 
-      <p style={{ marginBottom: "20px", color: "#6b7280" }}>
-        Monte visualmente seu funil conectando etapas.
+      <p style={{ marginBottom: "10px", marginTop: "20px", marginLeft: "10px",color: "#6b7280", fontSize:"15px"}}>
+        Monte visualmente seu funil, conecte etapas e salve seu projeto para visualizar os resultados
       </p>
-
+    </div>
       {/* Área do Canvas */}
       <div style={{ height: "600px" }}>
         <Canva />
