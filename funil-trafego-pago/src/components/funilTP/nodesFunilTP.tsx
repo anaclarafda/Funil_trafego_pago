@@ -2,7 +2,6 @@ import { Handle, Position } from "reactflow";
 
 export default function NodesFunil({ data }: any) {
   const { stepType, label, value } = data;
-
   const getStyle = () => {
     switch (stepType) {
       case "ad":
