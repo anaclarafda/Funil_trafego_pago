@@ -16,7 +16,7 @@ function App() {
         Construa seu Funil de Tráfego Pago
       </h1>
 
-      <p style={{ marginBottom: "10px", marginTop: "20px", marginLeft: "10px",color: "#6b7280", fontSize:"15px"}}>
+      <p style={{ marginBottom: "10px", marginTop: "20px", marginLeft: "20px",color: "#6b7280", fontSize:"15px"}}>
         Monte visualmente seu funil, conecte etapas e salve seu projeto para visualizar os resultados
       </p>
     </div>

@@ -11,7 +11,7 @@ import ReactFlow, {
 } from "reactflow";
 import EntradaValor from "./entradaValor";
 import "reactflow/dist/style.css";
-import { FunnelStepType, funnelStepLabels } from "./etapasFunilTP";
+import { FunnelStepType, funnelStepLabels, compararValoresConectados, calcularTaxaConversao } from "./etapasFunilTP";
 import NodesFunil from "./nodesFunilTP";
 
 const nodeTypes = {
@@ -42,35 +42,67 @@ export default function TelaFunilTP() {
     setIsModalOpen(true);
   };
 
+  const atualizarTaxas = (nodeId: string, nodesAtual: any[], edgesAtual: any[]) => {
+    const resultados = calcularTaxaConversao(nodeId, nodesAtual, edgesAtual);
+
+    if (!resultados) return;
+
+    setNodes((nds: any[]) =>
+      nds.map((node) => {
+        const resultado = resultados.find(r => r?.targetId === node.id);
+
+        if (resultado) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              conversionRate: resultado.taxa
+            }
+          };
+        }
+
+        return node;
+      })
+    );
+  };
+
   const onConnect = useCallback(
     (params: Connection) => {
-      setEdges((eds: Edge[]) => addEdge(params, eds));
+      const novosEdges = addEdge(params, edges);
+      setEdges(novosEdges);
+
+      if (params.source) {
+        atualizarTaxas(params.source, nodes, novosEdges);
+      }
     },
-    [setEdges]
+    [edges, nodes]
   );
 
   const addEtapa = (stepType: FunnelStepType) => {
     setCurrentStepType(stepType);
     setInputValue("");
-    setEditingNodeId(null); 
+    setEditingNodeId(null);
     setIsModalOpen(true);
   };
 
   const editarEtapa = (nodeId: string, novoValor: string) => {
-    setNodes((nds: any[]) =>
-      nds.map((node) =>
-        node.id === nodeId
-          ? {
-            ...node,
-            data: {
-              ...node.data,
-              value: novoValor
-            }
+    const novosNodes = nodes.map((node) =>
+      node.id === nodeId
+        ? {
+          ...node,
+          data: {
+            ...node.data,
+            value: novoValor
           }
-          : node
-      )
+        }
+        : node
     );
+
+    setNodes(novosNodes);
+
+    atualizarTaxas(nodeId, novosNodes, edges);
   };
+
   const excluirEtapa = (nodeId: string) => {
     setNodes((nds: any[]) => nds.filter((node) => node.id !== nodeId));
     setEdges((eds: any[]) => eds.filter(
@@ -83,8 +115,8 @@ export default function TelaFunilTP() {
 
     if (editingNodeId) {
       editarEtapa(editingNodeId, inputValue);
-    } 
-    
+    }
+
     else {
       const newNode = {
         id: getId(),
