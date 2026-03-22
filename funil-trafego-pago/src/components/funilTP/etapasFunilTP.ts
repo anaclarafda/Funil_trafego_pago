@@ -18,38 +18,6 @@ export const funnelStepLabels: Record<FunnelStepType, string> = {
 
 import { Edge, Node } from "reactflow";
 
-export const compararValoresConectados = (
-  nodeId: string,
-  nodes: Node[],
-  edges: Edge[]
-) => {
-  const conexoes = edges.filter(
-    (edge) => edge.source === nodeId || edge.target === nodeId
-  );
-
-  conexoes.forEach((edge) => {
-    const sourceNode = nodes.find((n) => n.id === edge.source);
-    const targetNode = nodes.find((n) => n.id === edge.target);
-
-    if (!sourceNode || !targetNode) return;
-
-    const valueSource = Number(sourceNode.data.value);
-    const valueTarget = Number(targetNode.data.value);
-
-    console.log("Comparando:");
-    console.log(sourceNode.id, valueSource);
-    console.log(targetNode.id, valueTarget);
-
-    if (valueTarget > valueSource) {
-      console.log("Cresceu 📈");
-    } else if (valueTarget < valueSource) {
-      console.log("Diminuiu 📉");
-    } else {
-      console.log("Igual ➖");
-    }
-  });
-};
-
 export const calcularTaxaConversao = (
   nodeId: string,
   nodes: Node[],

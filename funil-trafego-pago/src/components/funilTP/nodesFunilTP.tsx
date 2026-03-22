@@ -6,25 +6,25 @@ export default function NodesFunil({ id, data }: any) {
     switch (stepType) {
       case "ad":
         return {
-          background: "#fc9802",
+          background: "#9702a5",
           clipPath: "polygon(0% 0%, 100% 0%, 94% 100%, 6% 100%)"
         };
 
       case "landing":
         return {
-          background: "#ffae34",
+          background: "#c503d6",
           clipPath: "polygon(6% 0%, 94% 0%, 88% 100%, 12% 100%)"
         };
 
       case "form":
         return {
-          background: "#ffbc58",
+          background: "#df19e6",
           clipPath: "polygon(12% 0%, 88% 0%, 82% 100%, 18% 100%)"
         };
 
       case "checkout":
         return {
-          background: "#ffd493",
+          background: "#f101c9",
           clipPath: "polygon(18% 0%, 82% 0%, 50% 100%)"
         };
       default:
@@ -32,88 +32,60 @@ export default function NodesFunil({ id, data }: any) {
     }
   };
 
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: 200,
-        height: 60,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
+   return (
+    <div className="relative w-[180px] h-[55px] flex items-center justify-center">
+      
       <Handle
         type="target"
         position={Position.Top}
-        style={{
-          width: 12,
-          height: 12,
-          background: "#fff",
-          border: "2px solid #333"
-        }}
+        className="w-3 h-3 bg-white border-2 border-gray-700"
       />
 
+      {/* SHAPE */}
       <div
-        style={{
-          ...getShapeStyle(),
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "white",
-          fontSize: "10px",
-          textAlign: "center"
-        }}
+        style={getShapeStyle()}
+        className="w-full h-full flex flex-col items-center justify-center text-white text-center px-2"
       >
-        <div style={{ fontWeight: 600, fontSize: "10px" }}>
+        <div className="font-semibold text-[10px]">
           {label}
         </div>
 
         {value && (
-          <div style={{ fontSize: "10px", opacity: 0.9 }}>
+          <div className="text-[9px] opacity-90">
             {value}
           </div>
         )}
 
         {conversionRate && (
           <div
-            style={{
-              fontSize: "8px",
-              fontWeight: 600,
-            }}
+            className={`text-[9px] font-semibold text-black`}
           >
             {conversionRate}%
           </div>
         )}
       </div>
 
-      <div
-        style={{
-          position: "absolute",
-          top: -10,
-          right: -10,
-          display: "flex",
-          gap: 8,
-          fontSize: 8,
-          cursor: "pointer"
-        }}
-      >
-        <span onClick={() => onEdit(id)}>edit</span>
-        <span onClick={() => onDelete(id)}>x</span>
+      {/* Botoes de editar e fechar */}
+      <div className="absolute -top-2 -right-2 flex gap-1 text-[7px]">
+        <button
+          onClick={() => onEdit(id)}
+          className="bg-white text-gray-700 px-1 rounded shadow hover:bg-gray-100"
+        >
+          edit
+        </button>
+
+        <button
+          onClick={() => onDelete(id)}
+          className="bg-red-500 text-white px-1 rounded shadow hover:bg-red-600"
+        >
+          ✕
+        </button>
       </div>
 
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{
-          width: 12,
-          height: 12,
-          background: "#fff",
-          border: "2px solid #333"
-        }}
+        className="w-3 h-3 bg-white border-2 border-gray-700"
       />
     </div>
   );

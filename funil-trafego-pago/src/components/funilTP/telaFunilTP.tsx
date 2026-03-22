@@ -11,7 +11,7 @@ import ReactFlow, {
 } from "reactflow";
 import EntradaValor from "./entradaValor";
 import "reactflow/dist/style.css";
-import { FunnelStepType, funnelStepLabels, compararValoresConectados, calcularTaxaConversao } from "./etapasFunilTP";
+import { FunnelStepType, funnelStepLabels, calcularTaxaConversao } from "./etapasFunilTP";
 import NodesFunil from "./nodesFunilTP";
 
 const nodeTypes = {
@@ -120,7 +120,7 @@ export default function TelaFunilTP() {
     else {
       const newNode = {
         id: getId(),
-        position: { x: 90, y: 90 },
+        position: { x: 20, y: -45 },
         type: "funnelNode",
         data: {
           label: funnelStepLabels[currentStepType],
