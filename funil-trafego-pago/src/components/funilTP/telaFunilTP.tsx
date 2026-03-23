@@ -117,7 +117,7 @@ export default function TelaFunil() {
   return (
     <div className="w-full h-full">
 
-      <div className="p-[13px] rounded-xl shadow-[0_4px_12px_rgba(99,99,99,0.34)] flex items-center w-600 gap-[27px] border border-gray-200">
+      <div className="p-[13px] bg-gray-900 rounded-xl shadow-[0_4px_12px_rgba(99,99,99,0.34)] flex items-center w-600 gap-[27px] border border-gray-00 text-white">
         <span className="font-semibold ml-[18px]">
           Defina a etapa que você quer adicionar:
         </span>
@@ -127,7 +127,7 @@ export default function TelaFunil() {
           onChange={(e) =>
             setSelectedStep(e.target.value as FunnelStepType)
           }
-          className="px-3 py-2 rounded-lg border border-gray-300 text-sm cursor-pointer"
+              className="px-3 py-2 rounded-lg border border-gray-300 text-sm cursor-pointer bg-white text-gray-900"
         >
           {Object.entries(funnelStepLabels).map(([key, label]) => (
             <option key={key} value={key}>
@@ -138,14 +138,14 @@ export default function TelaFunil() {
 
         <button
           onClick={() => addEtapa(selectedStep)}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
+          className="bg-purple-400 text-black px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
         >
           + Adicionar
         </button>
 
         <button
           onClick={() => setMostrarResultados(true)}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
+          className="ml-auto bg-purple-400 text-black px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
         >
           Salvar
         </button>

@@ -28,14 +28,12 @@ export default function EntradaValor({
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Auto focus quando abrir
     useEffect(() => {
         if (isOpen) {
             inputRef.current?.focus();
         }
     }, [isOpen]);
 
-    // ESC fecha modal
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") {

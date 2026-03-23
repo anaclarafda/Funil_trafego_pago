@@ -9,12 +9,6 @@ export default function Resultados({ nodes }: any) {
 
     if (!nodesComTaxa.length) return null;
 
-    const melhorNode = nodesComTaxa.reduce((melhor: any, atual: any) =>
-        atual.data.conversionRate > melhor.data.conversionRate
-            ? atual
-            : melhor
-    );
-
     const piorNode = nodesComTaxa.reduce((pior: any, atual: any) =>
         atual.data.conversionRate < pior.data.conversionRate
             ? atual
@@ -65,10 +59,10 @@ export default function Resultados({ nodes }: any) {
             <div
                 style={{
                     position: "fixed",
-                    top: 100,
-                    right: 20,
-                    background: "#e3f3f3",
-                    border: "1px solid #2cd3d3",
+                    top: 210,
+                    right: 35,
+                    background: "#ddb4ff",
+                    border: "1px solid #ffffff",
                     padding: "16px",
                     borderRadius: "12px",
                     boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
@@ -77,30 +71,11 @@ export default function Resultados({ nodes }: any) {
             >
                 <strong>Pior etapa </strong>
 
-                <div>{piorNode.data.label}</div>
-                <div>{piorNode.data.conversionRate}% de conversão</div>
+                <div>{piorNode.data.label} - {piorNode.data.conversionRate}% de conversão</div>
 
                 <div style={{ marginTop: 8, fontSize: 13 }}>
                     {aviso()}
                 </div>
-            </div>
-            <div
-                style={{
-                    position: "fixed",
-                    top: 260,
-                    right: 20,
-                    background: "#d1fae5",
-                    border: "1px solid #10b981",
-                    padding: "16px",
-                    borderRadius: "12px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                    zIndex: 9999
-                }}
-            >
-                <strong>Melhor etapa 🚀</strong>
-
-                <div>{melhorNode.data.label}</div>
-                <div>{melhorNode.data.conversionRate}% de conversão</div>
             </div>
         </div>
     );
