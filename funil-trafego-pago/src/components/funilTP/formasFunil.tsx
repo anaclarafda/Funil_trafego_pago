@@ -4,7 +4,7 @@ import { Handle, Position } from "reactflow";
 export default function FormasFunil({ id, data }: any) {
 
   /* Desestruturação dos dados do nó */
-  const { stepType, label, value, onEdit, onDelete, conversionRate } = data;
+  const { stepType, label, value, onDelete, conversionRate } = data;
 
   /* Define a taxa final (anúncio sempre começa com 100%) */
   const finalConversionRate =
