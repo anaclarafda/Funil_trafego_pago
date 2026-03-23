@@ -6,5 +6,10 @@ Use o seguinte comando:
     
 Depois, instale os pacotes 
 
-Use o comando:
+Use o seguinte comando:
     npm install
+
+Tudo certo! Agora é só rodar
+
+Use o seguinte comando:
+    npm run dev 
