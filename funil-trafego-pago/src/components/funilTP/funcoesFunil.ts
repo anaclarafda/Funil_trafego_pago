@@ -1,6 +1,7 @@
 import { addEdge, Connection } from "reactflow";
 import { calcularTaxaConversao } from "./etapasFunil";
 
+/* Função para iniciar a edição de um nó */
 export const handleEdit = (
   nodeId: string,
   nodes: any[],
@@ -9,25 +10,30 @@ export const handleEdit = (
   setEditingNodeId: any,
   setIsModalOpen: any
 ) => {
+  /* Busca o nó selecionado */
   const node = nodes.find((n) => n.id === nodeId);
   if (!node) return;
 
+  /* Preenche os dados no modal */
   setCurrentStepType(node.data.stepType);
   setInputValue(node.data.value || "");
   setEditingNodeId(nodeId);
   setIsModalOpen(true);
 };
 
+/* Atualiza as taxas de conversão entre os nós */
 export const atualizarTaxas = (
   nodeId: string,
   nodesAtual: any[],
   edgesAtual: any[],
   setNodes: any
 ) => {
+  /* Calcula as taxas com base nas conexões */
   const resultados = calcularTaxaConversao(nodeId, nodesAtual, edgesAtual);
 
   if (!resultados) return;
 
+  /* Atualiza cada nó com sua respectiva taxa */
   setNodes((nds: any[]) =>
     nds.map((node) => {
       const resultado = resultados.find(r => r?.targetId === node.id);
@@ -47,6 +53,7 @@ export const atualizarTaxas = (
   );
 };
 
+/* Função executada ao conectar dois nós */
 export const onConnectFunc = (
   params: Connection,
   edges: any[],
@@ -54,20 +61,26 @@ export const onConnectFunc = (
   setEdges: any,
   atualizarTaxasFn: any
 ) => {
+  /* Adiciona a nova conexão */
   const novosEdges = addEdge(params, edges);
   setEdges(novosEdges);
 
+  /* Recalcula as taxas a partir do nó de origem */
   if (params.source) {
     atualizarTaxasFn(params.source, nodes, novosEdges);
   }
 };
 
+/* Remove um nó e suas conexões */
 export const excluirEtapa = (
   nodeId: string,
   setNodes: any,
   setEdges: any
 ) => {
+  /* Remove o nó */
   setNodes((nds: any[]) => nds.filter((node) => node.id !== nodeId));
+
+  /* Remove as conexões relacionadas */
   setEdges((eds: any[]) =>
     eds.filter(
       (edge) => edge.source !== nodeId && edge.target !== nodeId
@@ -75,6 +88,7 @@ export const excluirEtapa = (
   );
 };
 
+/* Atualiza o valor de uma etapa */
 export const editarEtapa = (
   nodeId: string,
   novoValor: string,
@@ -86,6 +100,7 @@ export const editarEtapa = (
 ) => {
   let novosNodesAtualizados: any[] = [];
 
+  /* Atualiza o valor do nó */
   setNodes((nds: any[]) => {
     novosNodesAtualizados = nds.map((node) =>
       node.id === nodeId
@@ -104,9 +119,11 @@ export const editarEtapa = (
     return novosNodesAtualizados;
   });
 
+  /* Recalcula as taxas após a edição */
   atualizarTaxasFn(nodeId, novosNodesAtualizados, edges);
 };
 
+/* Confirma a criação ou edição de uma etapa */
 export const confirmarEtapa = (
   currentStepType: any,
   editingNodeId: string | null,
@@ -122,9 +139,11 @@ export const confirmarEtapa = (
 ) => {
   if (!currentStepType) return;
 
+  /* Se estiver editando, atualiza o nó existente */
   if (editingNodeId) {
     editarEtapaFn(editingNodeId, inputValue);
   } else {
+    /* Cria um novo nó */
     const newNode = {
       id: getId(),
       position: {
@@ -144,6 +163,7 @@ export const confirmarEtapa = (
     setNodes((nds: any) => [...nds, newNode]);
   }
 
+  /* Fecha o modal e limpa estado de edição */
   setIsModalOpen(false);
   setEditingNodeId(null);
 };

@@ -1,14 +1,17 @@
+/* Tipos possíveis de etapas do funil */
 export type FunnelStepType =
   | "ad"
   | "landing"
   | "form"
-  | "checkout"
+  | "checkout";
 
+/* Interface que define os dados básicos de uma etapa */
 export interface FunnelStepData {
   label: string;
   stepType: FunnelStepType;
 }
 
+/* Mapeamento dos rótulos exibidos para cada etapa */
 export const funnelStepLabels: Record<FunnelStepType, string> = {
   ad: "Anúncio",
   landing: "Landing Page",
@@ -18,32 +21,44 @@ export const funnelStepLabels: Record<FunnelStepType, string> = {
 
 import { Edge, Node } from "reactflow";
 
+/* Função responsável por calcular a taxa de conversão entre etapas conectadas */
 export const calcularTaxaConversao = (
   nodeId: string,
   nodes: Node[],
   edges: Edge[]
 ) => {
+
+  /* Filtra todas as conexões que saem do nó atual */
   const conexoes = edges.filter(
     (edge) => edge.source === nodeId
   );
 
-  return conexoes.map((edge) => {
-    const sourceNode = nodes.find((n) => n.id === edge.source);
-    const targetNode = nodes.find((n) => n.id === edge.target);
+  return conexoes
+    .map((edge) => {
 
-    if (!sourceNode || !targetNode) return null;
+      /* Obtém os nós de origem e destino */
+      const sourceNode = nodes.find((n) => n.id === edge.source);
+      const targetNode = nodes.find((n) => n.id === edge.target);
 
-    const valueSource = Number(sourceNode.data.value);
-    const valueTarget = Number(targetNode.data.value);
+      if (!sourceNode || !targetNode) return null;
 
-    if (!valueSource) return null;
+      /* Converte os valores para número */
+      const valueSource = Number(sourceNode.data.value);
+      const valueTarget = Number(targetNode.data.value);
 
-    const taxa = (valueTarget / valueSource) * 100;
+      /* Evita divisão por zero */
+      if (!valueSource) return null;
 
-    return {
-      sourceId: sourceNode.id,
-      targetId: targetNode.id,
-      taxa: taxa.toFixed(1) 
-    };
-  }).filter(Boolean);
+      /* Calcula a taxa de conversão (%) */
+      const taxa = (valueTarget / valueSource) * 100;
+
+      return {
+        sourceId: sourceNode.id,
+        targetId: targetNode.id,
+        taxa: taxa.toFixed(1) 
+      };
+    })
+
+    /* Remove valores nulos do resultado */
+    .filter(Boolean);
 };
