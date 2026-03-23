@@ -2,7 +2,7 @@ import { Handle, Position } from "reactflow";
 
 /* Componente responsável por renderizar visualmente cada etapa do funil */
 export default function FormasFunil({ id, data }: any) {
-  
+
   /* Desestruturação dos dados do nó */
   const { stepType, label, value, onEdit, onDelete, conversionRate } = data;
 
@@ -84,12 +84,10 @@ export default function FormasFunil({ id, data }: any) {
 
       {/* Botões de ação (editar e excluir) */}
       <div className="absolute -top-2 -right-2 flex gap-1 text-[7px]">
-        <button
-          onClick={() => onEdit(id)}
-          className="bg-white text-gray-700 px-1 rounded shadow hover:bg-gray-100"
-        >
-          edit
-        </button>
+        <button onClick={() => {
+          console.log("clicou editar", id);
+          window.dispatchEvent(new CustomEvent("editNode", { detail: id }));
+        }}>editar</button>
 
         <button
           onClick={() => onDelete(id)}

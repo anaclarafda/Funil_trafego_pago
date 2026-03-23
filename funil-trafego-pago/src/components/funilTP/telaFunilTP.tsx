@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -8,9 +8,9 @@ import ReactFlow, {
   Connection,
 } from "reactflow";
 
-  /*Importação de componentes responsáveis pelo input de valores das etapas, 
-    desenho visual dos nós do funil, análise final dos valores inseridos nos funis 
-    e importação das funções auxiliares que controlam a lógica do funil*/
+/*Importação de componentes responsáveis pelo input de valores das etapas, 
+  desenho visual dos nós do funil, análise final dos valores inseridos nos funis 
+  e importação das funções auxiliares que controlam a lógica do funil*/
 
 import EntradaValor from "./entradaValor";
 import "reactflow/dist/style.css";
@@ -76,6 +76,28 @@ export default function TelaFunil() {
     atualizarTaxas(nodeId, nodesAtual, edgesAtual, setNodes);
   };
 
+  useEffect(() => {
+    const handler = (e: any) => {
+      const nodeId = e.detail;
+
+      console.log("EVENTO GLOBAL", nodeId);
+
+      const node = nodes.find((n) => n.id === nodeId);
+      if (!node) return;
+
+      setCurrentStepType(node.data.stepType);
+      setInputValue(node.data.value || "");
+      setEditingNodeId(nodeId);
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener("editNode", handler);
+
+    return () => {
+      window.removeEventListener("editNode", handler);
+    };
+  }, [nodes]);
+  
   const onConnect = useCallback(
     (params: Connection) => {
       onConnectFunc(
@@ -133,9 +155,9 @@ export default function TelaFunil() {
     <div className="w-full h-full">
 
       {/* Estilização da Barra superior de controle para adicionar etapas ao funil e botões */}
-      
+
       <div className="p-[13px] bg-gray-900 rounded-xl shadow-[0_4px_12px_rgba(99,99,99,0.34)] flex items-center w-600 gap-[27px] border border-gray-00 text-white">
-        
+
         <span className="font-semibold ml-[18px] text-[20px]">
           Defina a etapa que você quer adicionar:
         </span>

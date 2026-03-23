@@ -10,11 +10,11 @@ export const handleEdit = (
   setEditingNodeId: any,
   setIsModalOpen: any
 ) => {
-  /* Busca o nó selecionado */
+  console.log("handleEdit chamado", nodeId);
+
   const node = nodes.find((n) => n.id === nodeId);
   if (!node) return;
 
-  /* Preenche os dados no modal */
   setCurrentStepType(node.data.stepType);
   setInputValue(node.data.value || "");
   setEditingNodeId(nodeId);
@@ -98,11 +98,8 @@ export const editarEtapa = (
   handleEdit: any,
   excluirEtapaFn: any
 ) => {
-  let novosNodesAtualizados: any[] = [];
-
-  /* Atualiza o valor do nó */
   setNodes((nds: any[]) => {
-    novosNodesAtualizados = nds.map((node) =>
+    const novosNodes = nds.map((node) =>
       node.id === nodeId
         ? {
             ...node,
@@ -116,11 +113,10 @@ export const editarEtapa = (
         : node
     );
 
-    return novosNodesAtualizados;
-  });
+    atualizarTaxasFn(nodeId, novosNodes, edges);
 
-  /* Recalcula as taxas após a edição */
-  atualizarTaxasFn(nodeId, novosNodesAtualizados, edges);
+    return novosNodes;
+  });
 };
 
 /* Confirma a criação ou edição de uma etapa */
@@ -131,7 +127,7 @@ export const confirmarEtapa = (
   setNodes: any,
   setIsModalOpen: any,
   setEditingNodeId: any,
-  handleEdit: any,
+  handleEditLocal: any,
   excluirEtapaFn: any,
   editarEtapaFn: any,
   funnelStepLabels: any,
@@ -155,7 +151,7 @@ export const confirmarEtapa = (
         label: funnelStepLabels[currentStepType],
         stepType: currentStepType,
         value: inputValue,
-        onEdit: handleEdit,
+        onEdit: handleEditLocal,
         onDelete: excluirEtapaFn
       }
     };
