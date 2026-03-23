@@ -1,7 +1,11 @@
 import { Handle, Position } from "reactflow";
 
-export default function NodesFunil({ id, data }: any) {
+export default function FormasFunil({ id, data }: any) {
   const { stepType, label, value, onEdit, onDelete, conversionRate } = data;
+
+  const finalConversionRate =
+    stepType === "ad" ? 100 : conversionRate;
+
   const getShapeStyle = () => {
     switch (stepType) {
       case "ad":
@@ -32,9 +36,9 @@ export default function NodesFunil({ id, data }: any) {
     }
   };
 
-   return (
+  return (
     <div className="relative w-[180px] h-[55px] flex items-center justify-center">
-      
+
       <Handle
         type="target"
         position={Position.Top}
@@ -52,20 +56,19 @@ export default function NodesFunil({ id, data }: any) {
 
         {value && (
           <div className="text-[9px] opacity-90">
-            {value}
+            {data.value}
           </div>
         )}
 
-        {conversionRate && (
-          <div
-            className={`text-[9px] font-semibold text-black`}
-          >
-            {conversionRate}%
+        {finalConversionRate !== undefined && (
+          <div className="text-[9px] font-semibold text-black">
+            {finalConversionRate}%
           </div>
         )}
+
+
       </div>
 
-      {/* Botoes de editar e fechar */}
       <div className="absolute -top-2 -right-2 flex gap-1 text-[7px]">
         <button
           onClick={() => onEdit(id)}

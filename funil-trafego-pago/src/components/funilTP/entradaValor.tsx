@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { FunnelStepType } from "./etapasFunilTP";
+import { FunnelStepType } from "./etapasFunil";
 
 interface EntradaValorProps {
     isOpen: boolean;

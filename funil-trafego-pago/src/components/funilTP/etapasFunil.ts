@@ -43,7 +43,7 @@ export const calcularTaxaConversao = (
     return {
       sourceId: sourceNode.id,
       targetId: targetNode.id,
-      taxa: taxa.toFixed(1) // tipo "32.5"
+      taxa: taxa.toFixed(1) 
     };
   }).filter(Boolean);
 };

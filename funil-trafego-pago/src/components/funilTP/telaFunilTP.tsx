@@ -3,16 +3,28 @@ import ReactFlow, {
   Background,
   Controls,
   MiniMap,
-  addEdge,
   useNodesState,
   useEdgesState,
   Connection,
-  Edge
 } from "reactflow";
+
 import EntradaValor from "./entradaValor";
 import "reactflow/dist/style.css";
-import { FunnelStepType, funnelStepLabels, calcularTaxaConversao } from "./etapasFunilTP";
-import NodesFunil from "./nodesFunilTP";
+import {
+  FunnelStepType,
+  funnelStepLabels,
+} from "./etapasFunil";
+import NodesFunil from "./formasFunil";
+import Resultados from "./resultados";
+
+import {
+  handleEdit,
+  atualizarTaxas,
+  onConnectFunc,
+  excluirEtapa,
+  editarEtapa,
+  confirmarEtapa
+} from "./funcoesFunil";
 
 const nodeTypes = {
   funnelNode: NodesFunil
@@ -21,7 +33,7 @@ const nodeTypes = {
 let id = 2;
 const getId = () => `${id++}`;
 
-export default function TelaFunilTP() {
+export default function TelaFunil() {
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,51 +44,68 @@ export default function TelaFunilTP() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const handleEdit = (nodeId: string) => {
-    const node = nodes.find((n) => n.id === nodeId);
-    if (!node) return;
+  const [mostrarResultados, setMostrarResultados] = useState(false);
 
-    setCurrentStepType(node.data.stepType);
-    setInputValue(node.data.value || "");
-    setEditingNodeId(nodeId);
-    setIsModalOpen(true);
+  const handleEditLocal = (nodeId: string) => {
+    handleEdit(
+      nodeId,
+      nodes,
+      setCurrentStepType,
+      setInputValue,
+      setEditingNodeId,
+      setIsModalOpen
+    );
   };
 
-  const atualizarTaxas = (nodeId: string, nodesAtual: any[], edgesAtual: any[]) => {
-    const resultados = calcularTaxaConversao(nodeId, nodesAtual, edgesAtual);
-
-    if (!resultados) return;
-
-    setNodes((nds: any[]) =>
-      nds.map((node) => {
-        const resultado = resultados.find(r => r?.targetId === node.id);
-
-        if (resultado) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              conversionRate: resultado.taxa
-            }
-          };
-        }
-
-        return node;
-      })
-    );
+  const atualizarTaxasLocal = (nodeId: string, nodesAtual: any[], edgesAtual: any[]) => {
+    atualizarTaxas(nodeId, nodesAtual, edgesAtual, setNodes);
   };
 
   const onConnect = useCallback(
     (params: Connection) => {
-      const novosEdges = addEdge(params, edges);
-      setEdges(novosEdges);
-
-      if (params.source) {
-        atualizarTaxas(params.source, nodes, novosEdges);
-      }
+      onConnectFunc(
+        params,
+        edges,
+        nodes,
+        setEdges,
+        (source: string, n: any[], e: any[]) =>
+          atualizarTaxas(source, n, e, setNodes)
+      );
     },
     [edges, nodes]
   );
+
+  const excluirEtapaLocal = (nodeId: string) => {
+    excluirEtapa(nodeId, setNodes, setEdges);
+  };
+
+  const editarEtapaLocal = (nodeId: string, novoValor: string) => {
+    editarEtapa(
+      nodeId,
+      novoValor,
+      setNodes,
+      edges,
+      atualizarTaxasLocal,
+      handleEditLocal,
+      excluirEtapaLocal
+    );
+  };
+
+  const confirmarEtapaLocal = () => {
+    confirmarEtapa(
+      currentStepType,
+      editingNodeId,
+      inputValue,
+      setNodes,
+      setIsModalOpen,
+      setEditingNodeId,
+      handleEditLocal,
+      excluirEtapaLocal,
+      editarEtapaLocal,
+      funnelStepLabels,
+      getId
+    );
+  };
 
   const addEtapa = (stepType: FunnelStepType) => {
     setCurrentStepType(stepType);
@@ -85,88 +114,20 @@ export default function TelaFunilTP() {
     setIsModalOpen(true);
   };
 
-  const editarEtapa = (nodeId: string, novoValor: string) => {
-    const novosNodes = nodes.map((node) =>
-      node.id === nodeId
-        ? {
-          ...node,
-          data: {
-            ...node.data,
-            value: novoValor
-          }
-        }
-        : node
-    );
-
-    setNodes(novosNodes);
-
-    atualizarTaxas(nodeId, novosNodes, edges);
-  };
-
-  const excluirEtapa = (nodeId: string) => {
-    setNodes((nds: any[]) => nds.filter((node) => node.id !== nodeId));
-    setEdges((eds: any[]) => eds.filter(
-      (edge) => edge.source !== nodeId && edge.target !== nodeId
-    ));
-  };
-
-  const confirmarEtapa = () => {
-    if (!currentStepType) return;
-
-    if (editingNodeId) {
-      editarEtapa(editingNodeId, inputValue);
-    }
-
-    else {
-      const newNode = {
-        id: getId(),
-        position: { x: 20, y: -45 },
-        type: "funnelNode",
-        data: {
-          label: funnelStepLabels[currentStepType],
-          stepType: currentStepType,
-          value: inputValue,
-          onEdit: handleEdit,
-          onDelete: excluirEtapa
-        }
-      };
-
-      setNodes((nds: any) => [...nds, newNode]);
-    }
-
-    setIsModalOpen(false);
-    setEditingNodeId(null);
-  };
-
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div className="w-full h-full">
 
-      <div
-        style={{
-          padding: "13px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(99, 99, 99, 0.34)",
-          display: "flex",
-          alignItems: "center",
-          width: "50%",
-          gap: "27px",
-          border: "1px solid #e5e7eb"
-        }}
-      >
-        <span style={{ fontWeight: 600, marginLeft: 18 }}>Defina a etapa que você quer adicionar:</span>
+      <div className="p-[13px] rounded-xl shadow-[0_4px_12px_rgba(99,99,99,0.34)] flex items-center w-600 gap-[27px] border border-gray-200">
+        <span className="font-semibold ml-[18px]">
+          Defina a etapa que você quer adicionar:
+        </span>
 
         <select
           value={selectedStep}
           onChange={(e) =>
             setSelectedStep(e.target.value as FunnelStepType)
           }
-          style={{
-            padding: "8px 12px",
-            borderRadius: "8px",
-            border: "1px solid #d1d5db",
-            fontSize: "14px",
-            cursor: "pointer"
-          }}
+          className="px-3 py-2 rounded-lg border border-gray-300 text-sm cursor-pointer"
         >
           {Object.entries(funnelStepLabels).map(([key, label]) => (
             <option key={key} value={key}>
@@ -177,18 +138,16 @@ export default function TelaFunilTP() {
 
         <button
           onClick={() => addEtapa(selectedStep)}
-          style={{
-            background: "#f04c00",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: 500,
-            transition: "0.2s"
-          }}
+          className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
         >
           + Adicionar
+        </button>
+
+        <button
+          onClick={() => setMostrarResultados(true)}
+          className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer transition duration-200 hover:bg-gray-600"
+        >
+          Salvar
         </button>
       </div>
 
@@ -197,9 +156,10 @@ export default function TelaFunilTP() {
         stepType={currentStepType}
         value={inputValue}
         onChange={setInputValue}
-        onConfirm={confirmarEtapa}
+        onConfirm={confirmarEtapaLocal}
         onCancel={() => setIsModalOpen(false)}
       />
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -213,6 +173,8 @@ export default function TelaFunilTP() {
         <Controls />
         <Background />
       </ReactFlow>
+
+      {mostrarResultados && <Resultados nodes={nodes} />}
     </div>
   );
 }

@@ -16,7 +16,7 @@ function App() {
         </div>
 
         {/* Área do Canvas */}
-           <div className="bg-white rounded-xl shadow-md h-[170vh]">
+           <div className="bg-white rounded-xl shadow-md h-[130vh]">
           <Canva />
         </div>
 
