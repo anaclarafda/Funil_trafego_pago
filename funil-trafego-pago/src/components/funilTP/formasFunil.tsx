@@ -1,6 +1,7 @@
 import { Handle, Position } from "reactflow";
 
 export default function FormasFunil({ id, data }: any) {
+  
   const { stepType, label, value, onEdit, onDelete, conversionRate } = data;
 
   const finalConversionRate =
