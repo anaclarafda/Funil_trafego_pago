@@ -17,16 +17,19 @@ function App() {
 
           <p className="text-purple-300 text-2xl font-semibold mt-2">
             Monte visualmente seu funil,{" "}
-            <span className="font-bold underline">
+            <span className="font-semibold underline">
               conecte etapas com uma linha
             </span>{" "}
             e{" "}
-            <span className="font-bold underline">
+            <span className="font-semibold underline">
               salve seu projeto
             </span>{" "}
-            <span className="font-bold underline">
+            <span className="font-semibold mt-2">
               para visualizar os resultados
             </span>
+          </p>
+          <p className="text-[14px] font-semibold text-gray-300">
+            Obs: Ao editar uma etapa, reconecte os nós para que a porcentagem seja recalculada
           </p>
         </div>
 
