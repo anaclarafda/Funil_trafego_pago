@@ -1,6 +1,8 @@
+ /*Componente  responsável por renderezar o card que aparece na tale ao
+ clicar no botão "Salvar". O Card contém informações para guiar o usuário a melhorias*/
+
 export default function Resultados({ nodes }: any) {
 
-  /* Se não houver nós, não exibe nada */
   if (!nodes.length) return null;
 
   /* Filtra apenas nós que possuem taxa de conversão (exceto anúncios pois essa é sempre 100%) */
@@ -11,14 +13,15 @@ export default function Resultados({ nodes }: any) {
   );
   if (!nodesComTaxa.length) return null;
 
-  /* Identifica o nó com pior taxa de conversão */
+  /* Funções para Identificar o nó com pior taxa de conversão e para
+   Retornar uma mensagem de aviso baseada na etapa que está pior*/
+
   const piorNode = nodesComTaxa.reduce((pior: any, atual: any) =>
     atual.data.conversionRate < pior.data.conversionRate
       ? atual
       : pior
   );
 
-  /* Retorna uma mensagem de recomendação baseada na etapa */
   const aviso = () => {
     switch (piorNode.data.stepType) {
 
@@ -54,7 +57,6 @@ export default function Resultados({ nodes }: any) {
           </>
         );
 
-      /* Caso padrão */
       default:
         return "Revise essa etapa para melhorar sua conversão.";
     }

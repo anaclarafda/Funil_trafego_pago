@@ -63,17 +63,17 @@ export default function EntradaValor({
   const isInvalid = value.trim() === "" || Number(value) < 0;
 
   return (
+    /*Estilização da Caixa do modal,  Título do modal,  Formulário de entrada
+     Campo de entrada numérica   */
+
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
       
-      {/* Caixa do modal */}
       <div className="bg-white p-7 rounded-2xl w-[360px] shadow-xl">
         
-        {/* Título do modal */}
         <h3 className="mb-4 text-lg font-semibold">
           {mensagensInput[stepType]}
         </h3>
 
-        {/* Formulário de entrada */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -83,7 +83,6 @@ export default function EntradaValor({
           }}
           className="flex flex-col gap-4"
         >
-          {/* Campo de entrada numérica */}
           <input
             ref={inputRef}
             type="number"
@@ -94,10 +93,9 @@ export default function EntradaValor({
             className="px-3 py-2 rounded-xl border border-gray-300 text-sm outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Botões de ação */}
+          {/* Botões de ação : cancelamento e confirmação */}
           <div className="flex justify-end gap-3">
 
-            {/* Botão de cancelamento */}
             <button
               type="button"
               onClick={onCancel}
@@ -106,7 +104,6 @@ export default function EntradaValor({
               Cancelar
             </button>
 
-            {/* Botão de confirmação */}
             <button
               type="submit"
               disabled={isInvalid}
