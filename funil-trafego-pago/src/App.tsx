@@ -16,7 +16,17 @@ function App() {
           </h1>
 
           <p className="text-purple-300 text-2xl font-semibold mt-2">
-            Monte visualmente seu funil, conecte etapas com uma linha e salve seu projeto para visualizar os resultados
+            Monte visualmente seu funil,{" "}
+            <span className="font-bold underline">
+              conecte etapas com uma linha
+            </span>{" "}
+            e{" "}
+            <span className="font-bold underline">
+              salve seu projeto
+            </span>{" "}
+            <span className="font-bold underline">
+              para visualizar os resultados
+            </span>
           </p>
         </div>
 
