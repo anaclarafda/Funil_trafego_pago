@@ -65,7 +65,7 @@ export default function Resultados({ nodes }: any) {
   return (
     <div>
       {/* Estilização de Card fixo que exibe o resultado na tela, junto com uma Mensagem de recomendação   */}
-      <div className="fixed top-[210px] right-[35px] text-white bg-gray-800 border border-white p-4 rounded-xl shadow-xl z-[9999] max-w-[380px]">
+      <div className="fixed top-[230px] right-[35px] text-white bg-gray-800 border border-white p-4 rounded-xl shadow-xl z-[9999] max-w-[380px]">
         
         <div className="text-[19px] mb-2 font-semibold ">
           Pior etapa
